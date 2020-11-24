@@ -51,6 +51,14 @@ struct ARViewContainer: UIViewRepresentable {
     
 }
 
+enum Side {
+    case up
+    case left
+    case front
+    case right
+    case back
+}
+
 extension ARView {
     func setupGestures() {
         let tap = UITapGestureRecognizer(target: self, action: #selector(self.handleTap(recognizer:)))
@@ -68,26 +76,96 @@ extension ARView {
         print("origin position: \(originPosition)")
         
         if let firstResult = results.first {
-            var position = firstResult.position
-            print("first result entity: \(position)")
+            var touchPosition = firstResult.position
+            let touchedEntityTranslation = firstResult.entity.transform.translation
+            print("touch position: \(touchPosition)")
             print("number of anchors: \(self.scene.anchors.count)")
-            print()
-            let translation = firstResult.entity.transform.translation
+            print("touched entity position: \(touchedEntityTranslation)")
             
-            position.y += boxSize/2
-            if minecraftMode {
-                position.x = translation.x
-                position.z = translation.z
+            var side: Side? = nil
+            let epsilon: Float = 0.01
+            let boxUp = touchedEntityTranslation.y + (boxSize/2) - epsilon
+            if boxUp < touchPosition.y {
+                side = .up
+            } else {
+                let boxFront = touchedEntityTranslation.z + (boxSize/2) - epsilon
+                let boxBack = touchedEntityTranslation.z - (boxSize/2) + epsilon
+                let boxLeft = touchedEntityTranslation.x + (boxSize/2) - epsilon
+                let boxRight = touchedEntityTranslation.x - (boxSize/2) + epsilon
+                if boxFront < touchPosition.z {
+                    side = .front
+                } else if boxBack > touchPosition.z {
+                    side = .back
+                } else {
+                    if boxLeft > touchPosition.x {
+                        side = .left
+                    } else if boxRight < touchPosition.x {
+                        side = .right
+                    }
+                }
             }
-            placeCube(at: position)
+            
+            switch side {
+            case .up:
+                print("up")
+                touchPosition.y += boxSize/2
+                if minecraftMode {
+                    touchPosition.x = touchedEntityTranslation.x
+                    touchPosition.z = touchedEntityTranslation.z
+                }
+                break
+            case .front:
+                print("front")
+                touchPosition.z += boxSize/2
+                if minecraftMode {
+                    touchPosition.x = touchedEntityTranslation.x
+                    touchPosition.y = touchedEntityTranslation.y
+                }
+                break
+            case .back:
+                print("back")
+                touchPosition.z -= boxSize/2
+                if minecraftMode {
+                    touchPosition.x = touchedEntityTranslation.x
+                    touchPosition.y = touchedEntityTranslation.y
+                }
+                break
+            case .left:
+                print("left")
+                touchPosition.x -= boxSize/2
+                if minecraftMode {
+                    touchPosition.y = touchedEntityTranslation.y
+                    touchPosition.z = touchedEntityTranslation.z
+                }
+                break
+            case .right:
+                print("right")
+                touchPosition.x += boxSize/2
+                if minecraftMode {
+                    touchPosition.y = touchedEntityTranslation.y
+                    touchPosition.z = touchedEntityTranslation.z
+                }
+                break
+            default:
+                print("nothing")
+                touchPosition.y += boxSize/2
+                if minecraftMode {
+                    touchPosition.x = touchedEntityTranslation.x
+                    touchPosition.z = touchedEntityTranslation.z
+                }
+                break
+            }
+            print()
+            
+            placeCube(at: touchPosition)
         } else {
             let results = self.raycast(from: tapLocation, allowing: .estimatedPlane, alignment: .any)
             
             if let firstResult = results.first {
-                let position = simd_make_float3(firstResult.worldTransform.columns.3)
-                print("position: \(position)")
+                let touchPositionInSurface = simd_make_float3(firstResult.worldTransform.columns.3)
+                print("position: \(touchPositionInSurface)")
                 print()
-                placeCube(at: position)
+                placeCube(at: touchPositionInSurface)
             }
         }
     }
