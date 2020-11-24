@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F74CB1D0256D4120003D4CF6 /* Side.swift in Sources */ = {isa = PBXBuildFile; fileRef = F74CB1CF256D4120003D4CF6 /* Side.swift */; };
 		F75279C6256A73DF003A8E6F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F75279C5256A73DF003A8E6F /* AppDelegate.swift */; };
 		F75279C8256A73DF003A8E6F /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F75279C7256A73DF003A8E6F /* ContentView.swift */; };
 		F75279CA256A73DF003A8E6F /* Experience.rcproject in Sources */ = {isa = PBXBuildFile; fileRef = F75279C9256A73DF003A8E6F /* Experience.rcproject */; };
@@ -34,6 +35,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		F74CB1CF256D4120003D4CF6 /* Side.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Side.swift; sourceTree = "<group>"; };
 		F75279C2256A73DF003A8E6F /* Collaborative Building.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Collaborative Building.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F75279C5256A73DF003A8E6F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F75279C7256A73DF003A8E6F /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -99,6 +101,7 @@
 			children = (
 				F75279C5256A73DF003A8E6F /* AppDelegate.swift */,
 				F75279C7256A73DF003A8E6F /* ContentView.swift */,
+				F74CB1CF256D4120003D4CF6 /* Side.swift */,
 				F75279C9256A73DF003A8E6F /* Experience.rcproject */,
 				F75279CB256A73E0003A8E6F /* Assets.xcassets */,
 				F75279D0256A73E0003A8E6F /* Info.plist */,
@@ -264,6 +267,7 @@
 			files = (
 				F75279C8256A73DF003A8E6F /* ContentView.swift in Sources */,
 				F75279C6256A73DF003A8E6F /* AppDelegate.swift in Sources */,
+				F74CB1D0256D4120003D4CF6 /* Side.swift in Sources */,
 				F75279CA256A73DF003A8E6F /* Experience.rcproject in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
