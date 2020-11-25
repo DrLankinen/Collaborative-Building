@@ -49,7 +49,20 @@ struct ARViewContainer: UIViewRepresentable {
 extension ARView {
     func setupGestures() {
         let tap = UITapGestureRecognizer(target: self, action: #selector(self.handleTap(recognizer:)))
+        let longTap = UILongPressGestureRecognizer(target: self, action: #selector(self.handleLongPress(recognizer:)))
         self.addGestureRecognizer(tap)
+        self.addGestureRecognizer(longTap)
+    }
+    
+    @objc func handleLongPress(recognizer: UILongPressGestureRecognizer) {
+        let pressLocation = recognizer.location(in: self)
+        print("longpress")
+        let state = recognizer.state.rawValue
+        print("state: \(state)")
+        if let entity = self.entity(at: pressLocation), state == 1 {
+            print("enitty: \(entity)")
+            entity.removeFromParent()
+        }
     }
     
     @objc func handleTap(recognizer: UITapGestureRecognizer) {
