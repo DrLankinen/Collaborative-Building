@@ -9,25 +9,50 @@ import SwiftUI
 import RealityKit
 
 let boxSize: Float = 0.05
+let colors: [Color] = [.black,.green,.orange,.pink,.red,.yellow]
+
+var selectedColor: Color = Color.white
 
 struct ContentView : View {
-    @State var text: String = ""
+    @State var selected: Int = 0
     
     var body: some View {
         ZStack {
-            ARViewContainer(text: $text).edgesIgnoringSafeArea(.all)
-            Text(text).background(Color.blue)
+            ARViewContainer(entityColor: colors[selected]).edgesIgnoringSafeArea(.all)
+            VStack {
+                Spacer()
+                ScrollView(.horizontal) {
+                    HStack {
+                        ForEach(0..<colors.count) { index in
+                            Button(action: {
+                                selected = index
+                                selectedColor = colors[selected]
+                            }) {
+                                ZStack {
+                                    Rectangle()
+                                        .fill(colors[index])
+                                        .frame(width: 50, height: 50)
+                                    if selected == index {
+                                        Image(systemName: "checkmark").foregroundColor(.white)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                .background(Color.blue)
+                .padding(.bottom)
+            }
         }
     }
 }
 
-let gold = SimpleMaterial(color: .yellow, isMetallic: true)
 // Align cubes
 let minecraftMode: Bool = true
 
 struct ARViewContainer: UIViewRepresentable {
+    var entityColor: Color
     let origin = AnchorEntity(world: [0,0,0])
-    @Binding var text: String
     
     func makeUIView(context: Context) -> ARView {
         let arView = ARView(frame: .zero)
@@ -177,7 +202,8 @@ extension ARView {
     
     func placeCube(at position: SIMD3<Float>) {
         let origin = self.scene.anchors.first
-        let box = ModelEntity(mesh: .generateBox(size: boxSize), materials: [gold])
+        let c: UIColor = UIColor(selectedColor)
+        let box = ModelEntity(mesh: .generateBox(size: boxSize), materials: [SimpleMaterial(color: c, isMetallic: false)])
         box.generateCollisionShapes(recursive: true)
         if minecraftMode {
             box.position.x = position.x
