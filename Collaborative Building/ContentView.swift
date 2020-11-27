@@ -7,6 +7,8 @@
 
 import SwiftUI
 import RealityKit
+import ARKit
+import MultipeerConnectivity
 
 let boxSize: Float = 0.05
 let colors: [Color] = [.black,.green,.orange,.pink,.red,.yellow]
@@ -50,25 +52,164 @@ struct ContentView : View {
 // Align cubes
 let minecraftMode: Bool = true
 
+var multipeerSession: MultipeerSession?
+// A dictionary to map MultiPeer IDs to ARSession ID's.
+// This is useful for keeping track of which peer created which ARAnchors.
+var peerSessionIDs = [MCPeerID: String]()
+
 struct ARViewContainer: UIViewRepresentable {
     var entityColor: Color
     let origin = AnchorEntity(world: [0,0,0])
+    let arView = ARView(frame: .zero)
+    
+    class Coordinator: NSObject, ARSessionDelegate {
+        /// - Tag: DidOutputCollaborationData
+        func session(_ session: ARSession, didOutputCollaborationData data: ARSession.CollaborationData) {
+            print("ELIAS ELIAS")
+            guard let multipeerSession = multipeerSession else { return }
+            if !multipeerSession.connectedPeers.isEmpty {
+                guard let encodedData = try? NSKeyedArchiver.archivedData(withRootObject: data, requiringSecureCoding: true)
+                else { fatalError("Unexpectedly failed to encode collaboration data.") }
+                // Use reliable mode if the data is critical, and unreliable mode if the data is optional.
+                let dataIsCritical = data.priority == .critical
+                multipeerSession.sendToAllPeers(encodedData, reliably: dataIsCritical)
+            } else {
+                print("Deferred sending collaboration to later because there are no peers.")
+            }
+        }
+        
+        func session(_ session: ARSession, didFailWithError error: Error) {
+            print("LANKINEN LANKINEN")
+            guard error is ARError else { return }
+            
+            let errorWithInfo = error as NSError
+            let messages = [
+                errorWithInfo.localizedDescription,
+                errorWithInfo.localizedFailureReason,
+                errorWithInfo.localizedRecoverySuggestion
+            ]
+            
+            // Remove optional error messages.
+            let errorMessage = messages.compactMap({ $0 }).joined(separator: "\n")
+            
+            DispatchQueue.main.async {
+                // Present the error that occurred.
+                let alertController = UIAlertController(title: "The AR session failed.", message: errorMessage, preferredStyle: .alert)
+                let restartAction = UIAlertAction(title: "Restart Session", style: .default) { _ in
+                    alertController.dismiss(animated: true, completion: nil)
+//                    self.resetTracking()
+                }
+                alertController.addAction(restartAction)
+//                self.present(alertController, animated: true, completion: nil)
+            }
+        }
+    }
+    
+    func makeCoordinator() -> Coordinator {
+        Coordinator()
+    }
     
     func makeUIView(context: Context) -> ARView {
-        let arView = ARView(frame: .zero)
         arView.debugOptions = [.showAnchorOrigins, .showFeaturePoints]
-        
-        let sphere = ModelEntity(mesh: .generateSphere(radius: 0.01), materials: [SimpleMaterial(color: .blue, isMetallic: false)])
-        origin.addChild(sphere)
         arView.scene.addAnchor(origin)
+        arView.session.delegate = context.coordinator
         
         arView.setupGestures()
+        
+        let configuration = ARWorldTrackingConfiguration()
+        configuration.isCollaborationEnabled = true
+        configuration.environmentTexturing = .automatic
+        arView.session.run(configuration)
+        
+        // Start looking for other players via MultiPeerConnectivity.
+        multipeerSession = MultipeerSession(receivedDataHandler: receivedData, peerJoinedHandler:
+                                            peerJoined, peerLeftHandler: peerLeft, peerDiscoveredHandler: peerDiscovered)
+        print("hello")
         
         return arView
     }
     
     func updateUIView(_ uiView: ARView, context: Context) {}
+
+    func receivedData(_ data: Data, from peer: MCPeerID) {
+        print("RECIEVE DATA")
+//        if let collaborationData = try? NSKeyedUnarchiver.unarchivedObject(ofClass: ARSession.CollaborationData.self, from: data) {
+//            arView.session.update(with: collaborationData)
+//            return
+//        }
+//        let sessionIDCommandString = "SessionID:"
+//        if let commandString = String(data: data, encoding: .utf8), commandString.starts(with: sessionIDCommandString) {
+//            let newSessionID = String(commandString[commandString.index(commandString.startIndex,
+//                                                                     offsetBy: sessionIDCommandString.count)...])
+//            // If this peer was using a different session ID before, remove all its associated anchors.
+//            // This will remove the old participant anchor and its geometry from the scene.
+//            if let oldSessionID = peerSessionIDs[peer] {
+//                removeAllAnchorsOriginatingFromARSessionWithID(oldSessionID)
+//            }
+//
+//            peerSessionIDs[peer] = newSessionID
+//        }
+    }
     
+    func peerDiscovered(_ peer: MCPeerID) -> Bool {
+        print("PEER DISCOVERED")
+        guard let multipeerSession = multipeerSession else { return false }
+        
+        if multipeerSession.connectedPeers.count > 3 {
+            return false
+        } else {
+            return true
+        }
+    }
+    
+    /// - Tag: PeerJoined
+    func peerJoined(_ peer: MCPeerID) {
+        print("PEER JOINED")
+//        messageLabel.displayMessage("""
+//            A peer wants to join the experience.
+//            Hold the phones next to each other.
+//            """, duration: 6.0)
+        // Provide your session ID to the new user so they can keep track of your anchors.
+//        sendARSessionIDTo(peers: [peer])
+    }
+        
+    func peerLeft(_ peer: MCPeerID) {
+        print("PEER LEFT")
+//        messageLabel.displayMessage("A peer has left the shared experience.")
+
+        // Remove all ARAnchors associated with the peer that just left the experience.
+//        if let sessionID = peerSessionIDs[peer] {
+//            removeAllAnchorsOriginatingFromARSessionWithID(sessionID)
+//            peerSessionIDs.removeValue(forKey: peer)
+//        }
+    }
+    
+    func resetTracking() {
+        print("reset tracking")
+//        guard let configuration = arView.session.configuration else { print("A configuration is required"); return }
+//        arView.session.run(configuration, options: [.resetTracking, .removeExistingAnchors])
+    }
+    
+    private func removeAllAnchorsOriginatingFromARSessionWithID(_ identifier: String) {
+        print("remove all anchors originating from ar session with id")
+//        guard let frame = arView.session.currentFrame else { return }
+//        for anchor in frame.anchors {
+//            guard let anchorSessionID = anchor.sessionIdentifier else { continue }
+//            if anchorSessionID.uuidString == identifier {
+//                arView.session.remove(anchor: anchor)
+//            }
+//        }
+    }
+    
+    private func sendARSessionIDTo(peers: [MCPeerID]) {
+        print("send ar session id to")
+//        guard let multipeerSession = multipeerSession else { return }
+//        let idString = arView.session.identifier.uuidString
+//        let command = "SessionID:" + idString
+//        if let commandData = command.data(using: .utf8) {
+//            multipeerSession.sendToPeers(commandData, reliably: true, peers: peers)
+//        }
+    }
 }
 
 extension ARView {

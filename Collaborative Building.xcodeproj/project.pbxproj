@@ -7,14 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F70C1634257131EB0026CB32 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F75279C7256A73DF003A8E6F /* ContentView.swift */; };
 		F74CB1D0256D4120003D4CF6 /* Side.swift in Sources */ = {isa = PBXBuildFile; fileRef = F74CB1CF256D4120003D4CF6 /* Side.swift */; };
 		F75279C6256A73DF003A8E6F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F75279C5256A73DF003A8E6F /* AppDelegate.swift */; };
-		F75279C8256A73DF003A8E6F /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F75279C7256A73DF003A8E6F /* ContentView.swift */; };
-		F75279CA256A73DF003A8E6F /* Experience.rcproject in Sources */ = {isa = PBXBuildFile; fileRef = F75279C9256A73DF003A8E6F /* Experience.rcproject */; };
 		F75279CC256A73E0003A8E6F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F75279CB256A73E0003A8E6F /* Assets.xcassets */; };
 		F75279CF256A73E0003A8E6F /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F75279CE256A73E0003A8E6F /* Preview Assets.xcassets */; };
 		F75279DA256A73E1003A8E6F /* Collaborative_BuildingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F75279D9256A73E1003A8E6F /* Collaborative_BuildingTests.swift */; };
 		F75279E5256A73E1003A8E6F /* Collaborative_BuildingUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F75279E4256A73E1003A8E6F /* Collaborative_BuildingUITests.swift */; };
+		F77228B2256FB03B00701C47 /* MultipeerSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = F77228B1256FB03B00701C47 /* MultipeerSession.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -39,7 +39,6 @@
 		F75279C2256A73DF003A8E6F /* Collaborative Building.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Collaborative Building.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F75279C5256A73DF003A8E6F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F75279C7256A73DF003A8E6F /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		F75279C9256A73DF003A8E6F /* Experience.rcproject */ = {isa = PBXFileReference; lastKnownFileType = file.rcproject; path = Experience.rcproject; sourceTree = "<group>"; };
 		F75279CB256A73E0003A8E6F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F75279CE256A73E0003A8E6F /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		F75279D0256A73E0003A8E6F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -49,6 +48,7 @@
 		F75279E0256A73E1003A8E6F /* Collaborative BuildingUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Collaborative BuildingUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F75279E4256A73E1003A8E6F /* Collaborative_BuildingUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Collaborative_BuildingUITests.swift; sourceTree = "<group>"; };
 		F75279E6256A73E1003A8E6F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F77228B1256FB03B00701C47 /* MultipeerSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultipeerSession.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -102,10 +102,10 @@
 				F75279C5256A73DF003A8E6F /* AppDelegate.swift */,
 				F75279C7256A73DF003A8E6F /* ContentView.swift */,
 				F74CB1CF256D4120003D4CF6 /* Side.swift */,
-				F75279C9256A73DF003A8E6F /* Experience.rcproject */,
 				F75279CB256A73E0003A8E6F /* Assets.xcassets */,
 				F75279D0256A73E0003A8E6F /* Info.plist */,
 				F75279CD256A73E0003A8E6F /* Preview Content */,
+				F77228B1256FB03B00701C47 /* MultipeerSession.swift */,
 			);
 			path = "Collaborative Building";
 			sourceTree = "<group>";
@@ -152,6 +152,8 @@
 			dependencies = (
 			);
 			name = "Collaborative Building";
+			packageProductDependencies = (
+			);
 			productName = "Collaborative Building";
 			productReference = F75279C2256A73DF003A8E6F /* Collaborative Building.app */;
 			productType = "com.apple.product-type.application";
@@ -223,6 +225,8 @@
 				Base,
 			);
 			mainGroup = F75279B9256A73DF003A8E6F;
+			packageReferences = (
+			);
 			productRefGroup = F75279C3256A73DF003A8E6F /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -265,10 +269,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F75279C8256A73DF003A8E6F /* ContentView.swift in Sources */,
 				F75279C6256A73DF003A8E6F /* AppDelegate.swift in Sources */,
+				F77228B2256FB03B00701C47 /* MultipeerSession.swift in Sources */,
+				F70C1634257131EB0026CB32 /* ContentView.swift in Sources */,
 				F74CB1D0256D4120003D4CF6 /* Side.swift in Sources */,
-				F75279CA256A73DF003A8E6F /* Experience.rcproject in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
