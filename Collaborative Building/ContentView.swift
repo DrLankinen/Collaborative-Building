@@ -60,7 +60,6 @@ var peerSessionIDs = [MCPeerID: String]()
 struct ARViewContainer: UIViewRepresentable {
     var entityColor: Color
     let origin = AnchorEntity(world: [0,0,0])
-    let arView = ARView(frame: .zero)
     
     class Coordinator: NSObject, ARSessionDelegate {
         /// - Tag: DidOutputCollaborationData
@@ -77,21 +76,21 @@ struct ARViewContainer: UIViewRepresentable {
                 print("Deferred sending collaboration to later because there are no peers.")
             }
         }
-        
+
         func session(_ session: ARSession, didFailWithError error: Error) {
             print("LANKINEN LANKINEN")
             guard error is ARError else { return }
-            
+
             let errorWithInfo = error as NSError
             let messages = [
                 errorWithInfo.localizedDescription,
                 errorWithInfo.localizedFailureReason,
                 errorWithInfo.localizedRecoverySuggestion
             ]
-            
+
             // Remove optional error messages.
             let errorMessage = messages.compactMap({ $0 }).joined(separator: "\n")
-            
+
             DispatchQueue.main.async {
                 // Present the error that occurred.
                 let alertController = UIAlertController(title: "The AR session failed.", message: errorMessage, preferredStyle: .alert)
@@ -110,20 +109,21 @@ struct ARViewContainer: UIViewRepresentable {
     }
     
     func makeUIView(context: Context) -> ARView {
+        let arView = ARView(frame: .zero)
         arView.debugOptions = [.showAnchorOrigins, .showFeaturePoints]
         arView.scene.addAnchor(origin)
-        arView.session.delegate = context.coordinator
+//        arView.session.delegate = context.coordinator
         
         arView.setupGestures()
         
-        let configuration = ARWorldTrackingConfiguration()
-        configuration.isCollaborationEnabled = true
-        configuration.environmentTexturing = .automatic
-        arView.session.run(configuration)
+//        let configuration = ARWorldTrackingConfiguration()
+//        configuration.isCollaborationEnabled = true
+//        configuration.environmentTexturing = .automatic
+//        arView.session.run(configuration)
         
         // Start looking for other players via MultiPeerConnectivity.
-        multipeerSession = MultipeerSession(receivedDataHandler: receivedData, peerJoinedHandler:
-                                            peerJoined, peerLeftHandler: peerLeft, peerDiscoveredHandler: peerDiscovered)
+//        multipeerSession = MultipeerSession(receivedDataHandler: receivedData, peerJoinedHandler:
+//                                            peerJoined, peerLeftHandler: peerLeft, peerDiscoveredHandler: peerDiscovered)
         print("hello")
         
         return arView
